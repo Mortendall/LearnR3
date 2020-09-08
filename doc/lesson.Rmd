@@ -3,27 +3,114 @@ title: "Draft R Markdown document"
 author: "Morten Dall"
 output: html_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+##import raw data
+```{r setup}
+library(vroom)
+library(here)
 ```
 
 ```{r}
-# Code chunk
-"C:/Users/tvb217/Desktop/LearnR3
-+-- data
-|   \-- README.md
-+-- DESCRIPTION
-+-- doc
-|   +-- lesson.Rmd
-|   \-- README.md
-+-- LearnR3.Rproj
-+-- R
-|   +-- fetch_data.R
-|   +-- functions.R
-|   +-- README.md
-|   \-- setup.R
-+-- README.md
-\-- TODO.md
-```"
+user_1_info_file <- here("data-raw/mmash/user_1/user_info.csv")
+user_1_info_data <- vroom(
+  user_1_info_file,
+  col_select = -1,
+  col_types = cols(
+    Gender = col_character(),
+    Weight = col_double(),
+    Height = col_double(),
+    Age = col_double()
+  ),
+  .name_repair = snakecase::to_snake_case)
+
+user_1_info_data
+                          
+  ```
+```
+
+```{r}
+##Exercise: import of saliva data
+```
+
+```{r}
+user_1_saliva_file <- here("data-raw/mmash/user_1/saliva.csv")
+user_1_saliva_data_prep <- vroom(user_1_saliva_file,
+                                 col_select = -1)
+
+spec(user_1_saliva_data_prep)
+
+user_1_saliva_data <- vroom(
+    user_1_saliva_file,
+    col_select = -1,
+    col_types = cols(
+  SAMPLES = col_character(),
+  `Cortisol NORM` = col_double(),
+  `Melatonin NORM` = col_double()),
+    .name_repair = snakecase::to_snake_case
+)
+```
+
+##importing larger datasets
+
+```{r}
+user_1_rr_file <- here("data-raw/mmash/user_1/RR.csv")
+user_1_rr_data <- vroom(
+  user_1_rr_file,
+  col_select = -1,
+  col_types = cols(
+    ibi_s = col_double(),
+    day = col_double(),
+    time = col_time(format = "")),
+    .name_repair = snakecase::to_snake_case)
+
+user_1_rr_data
+
+
+```
+
+##Exercise: Import the Actigraph data
+
+```{r}
+user_1_actigraph_file <- here("data-raw/mmash/user_1/Actigraph.csv")
+user_1_actigraph_data_temp <- vroom(user_1_actigraph_file,
+                                    n_max = 100,
+                                    col_select = -1)
+user_1_actigraph_data <- vroom(user_1_actigraph_file,
+                               col_select = -1,
+                               col_types = cols(
+                                 Axis1 = col_double(),
+                                 Axis2 = col_double(),
+                                 Axis3 = col_double(),
+                                 Steps = col_double(),
+                                 HR = col_double(),
+                                 `Inclinometer Off` = col_double(),
+                                 `Inclinometer Standing` = col_double(),
+                                 `Inclinometer Sitting` = col_double(),
+                                 `Inclinometer Lying` = col_double(),
+                                 `Vector Magnitude` = col_double(),
+                                 day = col_double(),
+                                 time = col_time(format = "")),
+                               .name_repair = snakecase::to_snake_case)
+user_1_actigraph_data
+
+```
+
+##create a function
+```{r making an algebra function}
+
+#' An algebra function
+#'
+#' @param num1 a number
+#' @param num2 another number
+#'
+#' @return the summed value of parameters
+
+add_numbers <- function(num1, num2){
+  added <- num1+num2
+  return(added)
+}
+
+```
+
+
+```
 
