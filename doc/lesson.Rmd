@@ -27,9 +27,7 @@ user_1_info_data
   ```
 ```
 
-```{r}
 ##Exercise: import of saliva data
-```
 
 ```{r}
 user_1_saliva_file <- here("data-raw/mmash/user_1/saliva.csv")
@@ -47,6 +45,8 @@ user_1_saliva_data <- vroom(
   `Melatonin NORM` = col_double()),
     .name_repair = snakecase::to_snake_case
 )
+
+user_1_saliva_data
 ```
 
 ##importing larger datasets
@@ -90,55 +90,10 @@ user_1_actigraph_data <- vroom(user_1_actigraph_file,
                                  day = col_double(),
                                  time = col_time(format = "")),
                                .name_repair = snakecase::to_snake_case)
-user_1_actigraph_data
-
-```
-
-##create a function
-```{r making an algebra function}
-
-#' An algebra function
-#'
-#' @param num1 a number
-#' @param num2 another number
-#'
-#' @return the summed value of parameters
-
-add_numbers <- function(num1, num2){
-  added <- num1+num2
-  return(added)
-}
 
 
 ```
-
-```{r import user data function}
-
-#' Title
-#'
-#' @param file_path defines the location of the file
-#'
-#' @return imports and formats the user info
-
-import_user_info <- function(file_path){
-  info_data <- vroom(
-  file_path,
-  col_select = -1,
-  col_types = cols(
-    Gender = col_character(),
-    Weight = col_double(),
-    Height = col_double(),
-    Age = col_double()
-  ),
-  .name_repair = snakecase::to_snake_case)
-  return(info_data)
-  }
-
-import_user_info(user_1_info_file)
-import_user_info(here("data-raw/mmash/user_2/user_info.csv"))
-
-```
-
-
+```{r}
+import_user_info(here("data-raw/mmash/user_1/user_info.csv"))
 ```
 
