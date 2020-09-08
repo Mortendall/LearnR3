@@ -109,6 +109,34 @@ add_numbers <- function(num1, num2){
   return(added)
 }
 
+
+```
+
+```{r import user data function}
+
+#' Title
+#'
+#' @param file_path defines the location of the file
+#'
+#' @return imports and formats the user info
+
+import_user_info <- function(file_path){
+  info_data <- vroom(
+  file_path,
+  col_select = -1,
+  col_types = cols(
+    Gender = col_character(),
+    Weight = col_double(),
+    Height = col_double(),
+    Age = col_double()
+  ),
+  .name_repair = snakecase::to_snake_case)
+  return(info_data)
+  }
+
+import_user_info(user_1_info_file)
+import_user_info(here("data-raw/mmash/user_2/user_info.csv"))
+
 ```
 
 
