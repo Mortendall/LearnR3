@@ -1,0 +1,29 @@
+---
+title: "Draft R Markdown document"
+author: "Morten Dall"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Code chunk
+"C:/Users/tvb217/Desktop/LearnR3
++-- data
+|   \-- README.md
++-- DESCRIPTION
++-- doc
+|   +-- lesson.Rmd
+|   \-- README.md
++-- LearnR3.Rproj
++-- R
+|   +-- fetch_data.R
+|   +-- functions.R
+|   +-- README.md
+|   \-- setup.R
++-- README.md
+\-- TODO.md
+```"
+
