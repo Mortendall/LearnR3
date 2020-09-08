@@ -20,4 +20,5 @@ Imports:
     vroom,
     here,
     fs,
-    snakecase
+    snakecase,
+    tidyverse
