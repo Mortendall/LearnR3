@@ -82,27 +82,12 @@ rr_df <- import_multiple_files("RR.csv", import_rr_data)
 
 ```
 
-```{r}
-user_data %>% 
-    dplyr::mutate(user_id = stringr::str_extract(file_path_id, "user_[0-9][0-9]?")) %>% 
-  select(-file_path_id)
-View(user_data)
-```
+
 ##remove file path and add user ID
-```{r}
 
-full_join(user_info, saliva_df, by = "user_id")
-combined <- purrr::reduce(list(user_info, saliva_df), dplyr::full_join)
-View(combined)
-
-```
 
 ```{r}
-user_info %>% 
-  select(age)
 
-saliva_df %>% 
-  summarise(across(where(is.numeric), list(mean = mean, sd = sd)))
 
 summarized_rr_df <- rr_df %>% 
   group_by(user_id, day) %>% 
@@ -110,17 +95,16 @@ summarized_rr_df <- rr_df %>%
 View(summarized_rr_df)
 summarized_rr_df
 
-reduce(list(user_info, saliva_df, summarized_rr_df), full_join)
+
 
 saliva_with_day_df <- saliva_df %>% 
-  mutate(day = case_when(
+  dplyr::mutate(day = case_when(
     samples == "before sleep" ~ 1,
     samples == "wake up" ~ 2,
     TRUE ~ NA_real_
   ))
-saliva_with_day_df
 
-reduce(list(user_info, saliva_with_day_df, summarized_rr_df), full_join)
+saliva_with_day_df
 ```
 
 ##Exercise: Summarize and join the Actigraph data 
@@ -132,8 +116,57 @@ actigraph_df_sum <- actigraph_df %>%
   
 
 view(actigraph_df_sum)
-combined_data <- reduce(list(user_info, saliva_with_day_df, summarized_rr_df, actigraph_df_sum), full_join)
+combined_data <- reduce(list(user_data, saliva_with_day_df, summarized_rr_df, actigraph_df_sum), full_join)
 
 View(combined_data)
+```
+
+##Exercise importing activity data
+```{r}
+activity_data_file <- here("data-raw/mmash/user_1/activity.csv")
+
+import_activity_data(here("data-raw/mmash/user_1/activity.csv"))
+
+activity_data <- import_multiple_files("Activity.csv", import_activity_data)
+
+activity_data <- activity_data %>% 
+  dplyr::mutate(activity_seconds = end-start)
+
+#attempt to summarize the activity data
+
+activity_data_sum <- activity_data %>%
+  group_by(day, user_id, activity) %>% 
+  summarise(across(activity_seconds, list(sum = sum, sd = sd)))
+
+View(activity_data_sum)
+
+#join with the combined data
+
+grand_data <- reduce(list(combined_data, activity_data_sum), full_join)
+View(grand_data)
+```
+
+##the essential lines of code
+```{r essentials}
+user_data <- import_multiple_files("user_info.csv", import_user_info)
+saliva_df <- import_multiple_files("saliva.csv", import_saliva_data)
+actigraph_df <- import_multiple_files("Actigraph.csv", import_actigraph_data)
+rr_df <- import_multiple_files("RR.csv", import_rr_data)
+
+summarized_rr_df <- rr_df %>% 
+  group_by(user_id, day) %>% 
+  summarise(across(ibi_s, list(mean=mean, sd=sd), na.rm = T))
+View(summarized_rr_df)
+summarized_rr_df
+
+
+
+saliva_with_day_df <- saliva_df %>% 
+  mutate(day = case_when(
+    samples == "before sleep" ~ 1,
+    samples == "wake up" ~ 2,
+    TRUE ~ NA_real_
+  ))
+
 ```
 

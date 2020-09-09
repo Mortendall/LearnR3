@@ -22,4 +22,5 @@ Imports:
     fs,
     snakecase
 Depends: 
-    tidyverse
+    tidyverse,
+    R (>= 2.10)

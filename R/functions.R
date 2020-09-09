@@ -126,3 +126,23 @@ extract_user_id <- function(imported_data) {
     dplyr::select(-file_path_id)
   return(data_with_id)
 }
+
+#' Import of activity data
+#'
+#' @param activity_data directory for data file
+#'
+#' @return a data frame
+
+import_activity_data <- function(file_path){
+  data_output <- vroom::vroom(
+    file_path,
+    col_select = -1,
+    col_types = vroom::cols(
+      Activity = vroom::col_double(),
+      Start = vroom::col_time(format = ""),
+      End = vroom::col_time(format = ""),
+      Day = vroom::col_double(),
+    ),
+    .name_repair = snakecase::to_snake_case)
+  return(data_output)
+}
