@@ -10,6 +10,8 @@ library(here)
 library(tidyverse)
 library(fs)
 
+options(dplyr.summarise.inform = FALSE)
+
 ```
 
 ```{r}
@@ -89,7 +91,49 @@ View(user_data)
 ##remove file path and add user ID
 ```{r}
 
-user_info <- import_multiple_files("user_info.csv", import_user_info)
-user_info
+full_join(user_info, saliva_df, by = "user_id")
+combined <- purrr::reduce(list(user_info, saliva_df), dplyr::full_join)
+View(combined)
+
+```
+
+```{r}
+user_info %>% 
+  select(age)
+
+saliva_df %>% 
+  summarise(across(where(is.numeric), list(mean = mean, sd = sd)))
+
+summarized_rr_df <- rr_df %>% 
+  group_by(user_id, day) %>% 
+  summarise(across(ibi_s, list(mean=mean, sd=sd), na.rm = T))
+View(summarized_rr_df)
+summarized_rr_df
+
+reduce(list(user_info, saliva_df, summarized_rr_df), full_join)
+
+saliva_with_day_df <- saliva_df %>% 
+  mutate(day = case_when(
+    samples == "before sleep" ~ 1,
+    samples == "wake up" ~ 2,
+    TRUE ~ NA_real_
+  ))
+saliva_with_day_df
+
+reduce(list(user_info, saliva_with_day_df, summarized_rr_df), full_join)
+```
+
+##Exercise: Summarize and join the Actigraph data 
+```{r}
+actigraph_df_sum <- actigraph_df %>%
+  select(-c(axis_1,axis_2,axis_3, inclinometer_off,inclinometer_standing, inclinometer_sitting, inclinometer_lying)) %>% 
+  group_by(user_id, day) %>% 
+  summarise(across(c(steps, hr, vector_magnitude), list(mean = mean, sd = sd), na.rm = T))
+  
+
+view(actigraph_df_sum)
+combined_data <- reduce(list(user_info, saliva_with_day_df, summarized_rr_df, actigraph_df_sum), full_join)
+
+View(combined_data)
 ```
 
