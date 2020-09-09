@@ -35,4 +35,14 @@ mmash %>%
 View(mmash)
 ```
 
+```{r}
+mmash %>%
+  group_by(day) %>% 
+  summarise(across(
+    c(age, weight),
+    list(mean = mean, sd = sd),
+    na.rm = T
+  )) %>% 
+  pivot_longer(ends_with(c("mean","sd")))
+```
 
