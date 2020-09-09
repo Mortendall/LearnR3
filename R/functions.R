@@ -108,6 +108,21 @@ import_multiple_files <- function(file_pattern, import_function){
   data_files <- fs::dir_ls(here::here("data-raw/mmash/"),
                            regexp = file_pattern,
                            recurse = T)
-  combined_data <- purrr::map_dfr(data_files,import_function, .id = "file_path_id" )
+
+  combined_data <- purrr::map_dfr(data_files,import_function, .id = "file_path_id" ) %>%
+    extract_user_id()
   return(combined_data)
+}
+
+#' ID Extractor from file path
+#'
+#' @param imported_data The imported data set for the operation
+#'
+#' @return Data with user ID w/o file path
+
+extract_user_id <- function(imported_data) {
+  data_with_id <- imported_data %>%
+    dplyr::mutate(user_id = stringr::str_extract(file_path_id, "user_[0-9][0-9]?")) %>%
+    dplyr::select(-file_path_id)
+  return(data_with_id)
 }

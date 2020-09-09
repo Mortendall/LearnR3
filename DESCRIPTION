@@ -20,5 +20,6 @@ Imports:
     vroom,
     here,
     fs,
-    snakecase,
+    snakecase
+Depends: 
     tidyverse

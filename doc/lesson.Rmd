@@ -7,8 +7,9 @@ output: html_document
 ```{r setup}
 library(vroom)
 library(here)
-library(purrr)
+library(tidyverse)
 library(fs)
+
 ```
 
 ```{r}
@@ -77,5 +78,18 @@ saliva_df <- import_multiple_files("saliva.csv", import_saliva_data)
 actigraph_df <- import_multiple_files("Actigraph.csv", import_actigraph_data)
 rr_df <- import_multiple_files("RR.csv", import_rr_data)
 
+```
+
+```{r}
+user_data %>% 
+    dplyr::mutate(user_id = stringr::str_extract(file_path_id, "user_[0-9][0-9]?")) %>% 
+  select(-file_path_id)
+View(user_data)
+```
+##remove file path and add user ID
+```{r}
+
+user_info <- import_multiple_files("user_info.csv", import_user_info)
+user_info
 ```
 
