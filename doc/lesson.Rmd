@@ -4,7 +4,7 @@ author: "Morten Dall"
 output: html_document
 ---
 ##import raw data
-```{r setup}
+```{r setup, include = F}
 library(vroom)
 library(here)
 library(tidyverse)
@@ -14,5 +14,25 @@ options(dplyr.summarise.inform = FALSE)
 devtools::load_all()
 ```
 
+##split-apply-combine
+
+```{r}
+mmash %>% 
+  group_by(day) %>% 
+  summarise(across(
+    c(age, weight),
+    list(mean = mean, sd = sd,
+         max = max, min = min),
+    na.rm = T
+  ))
+```
+
+##Pivot longer
+```{r}
+mmash %>% 
+  select(-samples) %>% 
+  pivot_longer(c(-user_id, -day, -gender))
+View(mmash)
+```
 
 
